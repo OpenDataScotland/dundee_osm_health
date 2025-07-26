@@ -1,6 +1,28 @@
 ---
 title: Cafés in Dundee
 ---
+<style>
+/* Custom styles fixing bootstrap and leaflet conflicts */
+<style>
+  .leaflet-popup-content a.btn {
+    display: inline-block;
+    padding: 4px 8px;
+    margin-top: 8px;
+    background-color: #0d6efd;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .leaflet-popup-content a.btn:hover {
+    background-color: #0b5ed7;
+    color: #fff;
+  }
+  .leaflet-container a{
+	color: white !important;
+  }
+</style>
 
 <div class="container my-4">
   <h1 class="mb-3">Cafés in Dundee</h1>
@@ -102,12 +124,13 @@ title: Cafés in Dundee
         if (missingCount === 3) icon = iconRed;
 
         const popupContent = `
-          <strong>${name}</strong><br/>
-          ${street} ${house}<br/>
-          ${postcode}<br/>
-          ${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
-          ${hours ? `Opening hours: ${hours}` : ""}
-        `;
+			<strong>${name}</strong><br/>
+			${street} ${house}<br/>
+			${postcode}<br/>
+			${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
+			${hours ? `Opening hours: ${hours}<br/>` : ""}
+			<a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank" class="btn btn-sm btn-primary mt-2">Update this</a>
+			`;
 
         L.marker([lat, lon], { icon }).addTo(map).bindPopup(popupContent);
 
