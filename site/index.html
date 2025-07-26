@@ -1,10 +1,10 @@
 ---
 title: Cafés in Dundee
 ---
+
 <style>
-/* Custom styles fixing bootstrap and leaflet conflicts */
-<style>
-  .leaflet-popup-content a.btn {
+  /* Custom styles fixing bootstrap and leaflet conflicts */
+  <style > .leaflet-popup-content a.btn {
     display: inline-block;
     padding: 4px 8px;
     margin-top: 8px;
@@ -19,8 +19,8 @@ title: Cafés in Dundee
     background-color: #0b5ed7;
     color: #fff;
   }
-  .leaflet-popup-content a{
-	color: white !important;
+  .leaflet-popup-content a {
+    color: white !important;
   }
 </style>
 
@@ -47,6 +47,7 @@ title: Cafés in Dundee
             Opening Hours<br />
             <div class="progress" style="height: 4px"><div id="hours-bar" class="progress-bar bg-warning"></div></div>
           </th>
+          <th>Edit</th>
         </tr>
       </thead>
       <tbody id="quality-body"></tbody>
@@ -137,10 +138,17 @@ title: Cafés in Dundee
         // Add to quality table
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td class="${hasName ? "" : "text-danger fw-bold"}">${hasName ? tags.name : "⚠ Missing"}</td>
-          <td class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${house}, ${street}, ${postcode}` : "⚠ Incomplete"}</td>
-          <td class="${hasHours ? "" : "text-danger fw-bold"}">${hasHours ? hours : "⚠ Missing"}</td>
-        `;
+		<td class="${hasName ? "" : "text-danger fw-bold"}">${hasName ? tags.name : "⚠ Missing"}</td>
+		<td class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${house}, ${street}, ${postcode}` : "⚠ Incomplete"}</td>
+		<td class="${hasHours ? "" : "text-danger fw-bold"}">${hasHours ? hours : "⚠ Missing"}</td>
+		<td>
+			<a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank"
+			style="display:inline-block; padding:4px 8px; background-color:#0d6efd; color:#fff; text-decoration:none; border-radius:4px; font-size:0.875rem; font-weight:500;">
+			Update this
+			</a>
+		</td>
+		`;
+
         document.getElementById("quality-body").appendChild(row);
       });
 
