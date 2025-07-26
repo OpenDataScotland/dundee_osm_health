@@ -1,7 +1,24 @@
 import yaml from 'yaml';
 
+function handleOptions(request) {
+	return new Response(null, {
+		status: 204,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type',
+		},
+	});
+}
+
+
 export default {
 	async fetch(request, env, ctx) {
+		if (request.method === 'OPTIONS') {
+			return handleOptions(request);
+		}
+
+
 		const yamlUrl = `https://raw.githubusercontent.com/OpenDataScotland/dundee_osm_health/refs/heads/main/site/_reports/cafes.yml?cachebust=${Date.now()}`;
 
 		try {
