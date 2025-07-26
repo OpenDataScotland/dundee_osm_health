@@ -5,7 +5,7 @@ query: |
   [out:json][timeout:25];
 
   // Fetch the Dundee area
-  area["name"="Dundee"]["admin_level"="6"]->.searchArea;
+  area["name"="Dundee City"]["admin_level"="6"]->.searchArea;
 
   // Find all cafes within the Dundee area
   (
