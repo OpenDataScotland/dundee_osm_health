@@ -1,0 +1,18 @@
+---
+title: "Cafes"
+description: "A list of cafes in Dundee"
+query: |
+  [out:json][timeout:25];
+
+  // Fetch the Dundee area
+  area["name"="Dundee"]["admin_level"="6"]->.searchArea;
+
+  // Find all cafes within the Dundee area
+  (
+    node["amenity"="cafe"](area.searchArea);
+    way["amenity"="cafe"](area.searchArea);
+    relation["amenity"="cafe"](area.searchArea);
+  );
+
+  out center;
+---
