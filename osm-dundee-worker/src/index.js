@@ -27,7 +27,7 @@ export default {
 			const json = await overpassRes.json();
 
 			return new Response(JSON.stringify(json, null, 2), {
-				headers: { 'Content-Type': 'application/json' }
+				headers: { 'Content-Type': 'application/json', 'test': 'jcg' }
 			});
 		} catch (err) {
 			return new Response(`Error: ${err.message}`, { status: 500 });
