@@ -12,9 +12,20 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- Custom App Styles -->
+  <link rel="stylesheet" href="{{ '/assets/css/app.css' | relative_url }}" />
+
   <!-- Optional: Leaflet marker clustering or icons if you expand features later -->
 </head>
 <body>
-  {{ content }}
+  <div class="container-fluid mb-4">
+    <!-- Header Section -->
+    <div class="app-header">
+      <h1 class="app-title">Dundee OSM Health</h1>
+      {%- comment -%} <button class="city-button">City</button> {%- endcomment -%}
+    </div>
+
+    {{ content }}
+  </div>
 </body>
 </html>
