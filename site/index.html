@@ -90,7 +90,7 @@ title: Cafés in Dundee
     shadowSize: [41, 41],
   });
 
-  fetch("https://osm-dundee-worker.jackgilmore.workers.dev/")
+  fetch("https://osm-dundee-worker.jackgilmore.workers.dev/cafes")
     .then((res) => res.json())
     .then((data) => {
       const features = data.elements.filter((el) => el.type === "node" || (el.type === "way" && el.center));
