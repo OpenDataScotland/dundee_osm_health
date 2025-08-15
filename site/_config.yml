@@ -46,8 +46,17 @@ theme: null
 #   - vendor/ruby/
 
 defaults:
-  -
-    scope:
+  - scope:
+      path: ""
+      type: "reports"
+    values:
+      layout: "report"
+  - scope:
       path: "" # an empty string here means all files in the project
     values:
       layout: "default"
+
+collections:
+  reports:
+    output: true
+    permalink: /reports/:name/

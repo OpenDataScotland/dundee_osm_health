@@ -15,3 +15,4 @@ query: |
   );
 
   out center;
+---

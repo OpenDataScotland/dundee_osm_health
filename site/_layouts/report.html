@@ -1,0 +1,9 @@
+---
+layout: null
+---
+{
+      "id": {{ page.name | split: "." | first | jsonify }},
+      "title": {{ page.title | jsonify }},
+      "description": {{ page.description | jsonify }},
+      "query": {{ page.query | jsonify }}
+}
