@@ -17,32 +17,6 @@ title: Dundee OSM Health
   <div class="map-container">
     <div id="map" style="height: 100%; min-height: 500px"></div>
   </div>
-
-  <!-- Sidebar with Legend and Filters -->
-  <div class="sidebar">
-    <div class="legend-card">
-      <div class="legend-title">Legend</div>
-      <div class="legend-item">
-        <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png" class="legend-marker" alt="Complete" />
-        <span>Complete</span>
-      </div>
-      <div class="legend-item">
-        <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png" class="legend-marker" alt="Partial" />
-        <span>Partial</span>
-      </div>
-      <div class="legend-item">
-        <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png" class="legend-marker" alt="Missing" />
-        <span>Missing</span>
-      </div>
-
-      <div class="filter-checkbox">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="hideIncomplete" />
-          <label class="form-check-label" for="hideIncomplete"> Hide incomplete entries </label>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Summary Table Section -->
@@ -80,11 +54,76 @@ title: Dundee OSM Health
 </div>
 
 <script>
+  // Custom Legend Control
+  L.Control.Legend = L.Control.extend({
+    onAdd: function(map) {
+      const container = L.DomUtil.create('div', 'leaflet-control-legend');
+      
+      container.innerHTML = `
+        <div class="legend-header">
+          <div class="legend-title">Legend</div>
+          <button class="legend-toggle" type="button" aria-label="Toggle legend">
+            <span class="toggle-icon">−</span>
+          </button>
+        </div>
+        <div class="legend-content">
+          <div class="legend-item">
+            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png" class="legend-marker" alt="Complete" />
+            <span>Complete</span>
+          </div>
+          <div class="legend-item">
+            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png" class="legend-marker" alt="Partial" />
+            <span>Partial</span>
+          </div>
+          <div class="legend-item">
+            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png" class="legend-marker" alt="Missing" />
+            <span>Missing</span>
+          </div>
+          <div class="filter-checkbox">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="hideIncomplete" />
+              <label class="form-check-label" for="hideIncomplete"> Hide incomplete entries </label>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Add toggle functionality
+      const toggleBtn = container.querySelector('.legend-toggle');
+      const content = container.querySelector('.legend-content');
+      const toggleIcon = container.querySelector('.toggle-icon');
+      
+      // Auto-collapse on mobile devices
+      const isMobile = window.innerWidth <= 480;
+      if (isMobile) {
+        content.style.display = 'none';
+        toggleIcon.textContent = '+';
+        container.classList.add('legend-collapsed');
+      }
+      
+      toggleBtn.addEventListener('click', function() {
+        const isVisible = content.style.display !== 'none';
+        content.style.display = isVisible ? 'none' : 'block';
+        toggleIcon.textContent = isVisible ? '+' : '−';
+        container.classList.toggle('legend-collapsed', isVisible);
+      });
+      
+      return container;
+    }
+  });
+
+  L.control.legend = function(opts) {
+    return new L.Control.Legend(opts);
+  };
+
   const map = L.map("map").setView([56.462, -2.97], 13);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
   }).addTo(map);
+
+  // Add the custom legend control to the map
+  L.control.legend({ position: 'topright' }).addTo(map);
 
   // Define colour-coded icons
   const iconRed = L.icon({
@@ -237,21 +276,23 @@ title: Dundee OSM Health
   // Load initial data
   loadCategoryData(currentCategory);
 
-  // Handle filter checkbox
-  document.getElementById("hideIncomplete").addEventListener("change", function () {
-    const hideIncomplete = this.checked;
+  // Handle filter checkbox - use event delegation since the checkbox is created dynamically
+  document.addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'hideIncomplete') {
+      const hideIncomplete = e.target.checked;
 
-    // Remove all markers from map
-    allMarkers.forEach((item) => {
-      map.removeLayer(item.marker);
-    });
+      // Remove all markers from map
+      allMarkers.forEach((item) => {
+        map.removeLayer(item.marker);
+      });
 
-    // Add back filtered markers
-    allMarkers.forEach((item) => {
-      if (!hideIncomplete || item.missingCount === 0) {
-        item.marker.addTo(map);
-      }
-    });
+      // Add back filtered markers
+      allMarkers.forEach((item) => {
+        if (!hideIncomplete || item.missingCount === 0) {
+          item.marker.addTo(map);
+        }
+      });
+    }
   });
 
   // Handle category tab clicks
