@@ -17,6 +17,19 @@ title: Dundee OSM Health
   <div class="map-container">
     <div id="map" style="height: 100%; min-height: 500px"></div>
   </div>
+  
+  <!-- Pick a Place Section -->
+  <div class="pick-place-section">
+    <button class="pick-place-btn" type="button" id="pickPlaceBtn">
+      <span class="pick-place-icon">🎯</span>
+      Pick a place to visit and update
+    </button>
+    <div class="pick-place-info" id="pickPlaceInfo" style="display: none;">
+      <div class="picked-place-name" id="pickedPlaceName"></div>
+      <div class="picked-place-address" id="pickedPlaceAddress"></div>
+      <div class="picked-place-issues" id="pickedPlaceIssues"></div>
+    </div>
+  </div>
 </div>
 
 <!-- Summary Table Section -->
@@ -157,6 +170,68 @@ title: Dundee OSM Health
   let allMarkers = [];
   let filteredMarkers = [];
   let currentCategory = 'cafes'; // Default to first category
+  let currentPickedMarker = null; // Track the currently picked marker
+
+  // Function to pick a random place with low quality data
+  function pickRandomPlace() {
+    // Get markers with missing data (red or orange)
+    const lowQualityMarkers = allMarkers.filter(item => item.missingCount > 0);
+    
+    if (lowQualityMarkers.length === 0) {
+      alert('No places with missing data found in this category!');
+      return;
+    }
+    
+    // Pick a random marker
+    const randomIndex = Math.floor(Math.random() * lowQualityMarkers.length);
+    const pickedItem = lowQualityMarkers[randomIndex];
+    
+    // Remove previous picked marker highlight
+    if (currentPickedMarker) {
+      currentPickedMarker.setIcon(pickedItem.missingCount === 3 ? iconRed : iconOrange);
+    }
+    
+    // Highlight the picked marker with a pulsing effect
+    const pickedMarker = pickedItem.marker;
+    pickedMarker.setIcon(L.icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    }));
+    
+    currentPickedMarker = pickedMarker;
+    
+    // Center map on the picked marker
+    map.setView(pickedMarker.getLatLng(), 16);
+    
+    // Open the popup
+    pickedMarker.openPopup();
+    
+    // Update the pick place info
+    const popupContent = pickedMarker.getPopup().getContent();
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = popupContent;
+    
+    const name = tempDiv.querySelector('strong')?.textContent || 'Unknown place';
+    const address = tempDiv.querySelector('br')?.nextSibling?.textContent?.trim() || 'Address not available';
+    
+    // Determine missing issues
+    const issues = [];
+    if (!pickedItem.hasName) issues.push('Name');
+    if (!pickedItem.hasAddr) issues.push('Address');
+    if (!pickedItem.hasHours) issues.push('Opening hours');
+    
+    document.getElementById('pickedPlaceName').textContent = name;
+    document.getElementById('pickedPlaceAddress').textContent = address;
+    document.getElementById('pickedPlaceIssues').textContent = `Missing: ${issues.join(', ')}`;
+    document.getElementById('pickPlaceInfo').style.display = 'block';
+    
+    // Add pulsing animation class
+    pickedMarker.getElement()?.classList.add('pulse-marker');
+  }
 
   // Function to load data for a specific category
   function loadCategoryData(category) {
@@ -166,7 +241,9 @@ title: Dundee OSM Health
     });
     allMarkers = [];
     filteredMarkers = [];
+    currentPickedMarker = null; // Reset picked marker
     document.getElementById("quality-body").innerHTML = "";
+    document.getElementById("pickPlaceInfo").style.display = "none"; // Hide picked place info
 
     // Show loading state
     const loadingDiv = document.createElement("div");
@@ -317,5 +394,12 @@ title: Dundee OSM Health
       // Load data for the selected category
       loadCategoryData(categoryId);
     });
+  });
+
+  // Handle "Pick a place" button click - use event delegation
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'pickPlaceBtn') {
+      pickRandomPlace();
+    }
   });
 </script>

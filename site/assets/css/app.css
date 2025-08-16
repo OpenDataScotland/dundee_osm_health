@@ -115,6 +115,94 @@
   cursor: pointer;
 }
 
+/* Pick a Place Section Styles */
+.pick-place-section {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.pick-place-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pick-place-btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.pick-place-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pick-place-icon {
+  font-size: 18px;
+}
+
+.pick-place-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+  text-align: left;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.picked-place-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.picked-place-address {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.picked-place-issues {
+  font-size: 14px;
+  color: #dc3545;
+  font-weight: 500;
+}
+
+/* Pulsing animation for picked marker */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pulse-marker {
+  animation: pulse 2s infinite;
+}
+
 /* Collapsed state */
 .leaflet-control-legend.legend-collapsed {
   min-width: auto;
@@ -344,6 +432,33 @@
 
   .leaflet-control-legend .form-check-label {
     font-size: 11px;
+  }
+
+  /* Mobile pick place adjustments */
+  .pick-place-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .pick-place-icon {
+    font-size: 16px;
+  }
+
+  .pick-place-info {
+    padding: 0.75rem;
+    margin: 0.75rem 1rem;
+  }
+
+  .picked-place-name {
+    font-size: 14px;
+  }
+
+  .picked-place-address {
+    font-size: 12px;
+  }
+
+  .picked-place-issues {
+    font-size: 12px;
   }
 
   /* Auto-collapse legend on very small screens */
