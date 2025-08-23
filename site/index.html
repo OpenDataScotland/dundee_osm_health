@@ -268,13 +268,25 @@ title: Dundee OSM Health
 
           const name = tags.name || `Unnamed ${category.slice(0, -1)}`; // Remove 's' for singular
           const street = tags["addr:street"] || "";
-          const house = tags["addr:housenumber"] || "";
+          const housenumber = tags["addr:housenumber"] || "";
+          const unit = tags["addr:unit"] || "";
+          const housename = tags["addr:housename"] || "";
           const postcode = tags["addr:postcode"] || "";
           const hours = tags.opening_hours || null;
           const website = tags.website;
 
+          // Format the house/unit part for display
+          let houseDisplay = "";
+          if (housenumber) {
+            houseDisplay = housenumber;
+          } else if (unit) {
+            houseDisplay = `Unit ${unit}`;
+          } else if (housename) {
+            houseDisplay = housename;
+          }
+
           const hasName = !!tags.name;
-          const hasAddr = !!(tags["addr:street"] && tags["addr:housenumber"] && tags["addr:postcode"]);
+          const hasAddr = !!(tags["addr:street"] && (tags["addr:housenumber"] || tags["addr:unit"] || tags["addr:housename"]) && tags["addr:postcode"]);
           const hasHours = !!tags.opening_hours;
 
           if (!hasName) missingName++;
@@ -289,7 +301,7 @@ title: Dundee OSM Health
 
           const popupContent = `
 			<strong>${name}</strong><br/>
-			${street} ${house}<br/>
+			${houseDisplay} ${street}<br/>
 			${postcode}<br/>
 			${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
 			${hours ? `Opening hours: ${hours}<br/>` : ""}
@@ -309,7 +321,7 @@ title: Dundee OSM Health
           const row = document.createElement("tr");
           row.innerHTML = `
 		<td class="${hasName ? "" : "text-danger fw-bold"}">${hasName ? tags.name : "⚠ Missing"}</td>
-		<td class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${house}, ${street}, ${postcode}` : "⚠ Incomplete"}</td>
+		<td class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${houseDisplay} ${street}, ${postcode}` : "⚠ Incomplete"}</td>
 		<td class="${hasHours ? "" : "text-danger fw-bold"}">${hasHours ? hours : "⚠ Missing"}</td>
 		<td>
 			<div class="quality-bar">

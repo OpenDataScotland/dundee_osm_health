@@ -88,7 +88,7 @@ The application will be available at `http://localhost:4000`
 The application evaluates three key data fields at the moment:
 
 1. **Name**: Presence of a proper business name
-2. **Address**: Complete address (street, house number, postcode)
+2. **Address**: Complete address (street, house number/unit/housename, postcode)
 3. **Opening Hours**: Business operating hours
 
 ## Usage
