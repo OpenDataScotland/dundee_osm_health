@@ -1,6 +1,6 @@
 ---
-title: "Supermarkets"
-description: "A list of supermarkets in Dundee"
+title: "Pubs"
+description: "A list of pubs in Dundee"
 query: |
   [out:json][timeout:25];
 
