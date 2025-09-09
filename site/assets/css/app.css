@@ -1,3 +1,13 @@
+.github-link {
+  float:right;
+  width: 32px;
+  height: 32px;
+  background-image: url(../img/github-mark.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
 /* Custom styles fixing bootstrap and leaflet conflicts */
 .leaflet-popup-content a.btn {
   display: inline-block;
@@ -215,8 +225,9 @@
 /* Custom layout styles */
 .app-header {
   display: flex;
+  flex-direction: row !important;
   justify-content: space-between;
-  align-items: center;
+  align-items: center !important;
   margin-bottom: 1.5rem;
   padding: 1rem 0;
   border-bottom: 1px solid #dee2e6;
@@ -366,9 +377,9 @@
 /* Mobile responsive design */
 @media (max-width: 768px) {
   .app-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
   }
 
   .app-title {
