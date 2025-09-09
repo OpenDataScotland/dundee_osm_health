@@ -2,6 +2,8 @@
 
 A web application that helps identify and improve the quality of OpenStreetMap data in Dundee. The tool visualizes the completeness of place data (cafes, supermarkets, etc.) and provides an interactive way to discover places that need updating.
 
+You can see the site at <https://osm.dundee.opendata.scot/>.
+
 ## Features
 
 - **Interactive Map**: Visualize places across Dundee with colour-coded markers indicating data quality

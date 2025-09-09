@@ -1,3 +1,13 @@
+.github-link {
+  float:right;
+  width: 32px;
+  height: 32px;
+  background-image: url(../img/github-mark.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
 /* Custom styles fixing bootstrap and leaflet conflicts */
 .leaflet-popup-content a.btn {
   display: inline-block;
