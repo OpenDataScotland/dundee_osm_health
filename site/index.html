@@ -99,6 +99,7 @@ title: Dundee OSM Health
 .quality-complete { background: #28a745; }
 .quality-partial { background: #fd7e14; }
 .quality-missing { background: #dc3545; }
+/* Removed .pan-to-marker custom styles, now using Bootstrap 5 classes */
 </style>
 
 <script>
@@ -300,7 +301,7 @@ title: Dundee OSM Health
           addrQualityCount = 0,
           hoursQualityCount = 0;
 
-        features.forEach((el) => {
+        features.forEach((el, idx) => {
           const lat = el.lat || el.center?.lat;
           const lon = el.lon || el.center?.lon;
           const tags = el.tags || {};
@@ -363,28 +364,30 @@ title: Dundee OSM Health
             hasAddr: hasAddr,
             hasHours: hasHours,
             missingCount: missingCount,
+            tableRowIndex: idx // Track index for table row
           });
 
           // Add to quality table
           const row = document.createElement("tr");
           row.innerHTML = `
-		<td class="${hasName ? "" : "text-danger fw-bold"}">${hasName ? tags.name : "⚠ Missing"}</td>
-		<td class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${houseDisplay} ${streetOrPlace}, ${postcode}` : "⚠ Incomplete"}</td>
-		<td class="${hasHours ? "" : "text-danger fw-bold"}">${hasHours ? hours : "⚠ Missing"}</td>
-		<td>
-			<div class="quality-bar">
-				<div class="quality-fill ${missingCount === 0 ? "quality-complete" : missingCount === 3 ? "quality-missing" : "quality-partial"}" 
-					 style="width: ${100 - (missingCount / 3) * 100}%"></div>
-			</div>
-		</td>
-		<td>
-			<a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank"
-			style="display:inline-block; padding:4px 8px; background-color:#0d6efd; color:#fff; text-decoration:none; border-radius:4px; font-size:0.875rem; font-weight:500;">
-			Update this
-			</a>
-		</td>
-		`;
-
+        <td class="${hasName ? '' : 'text-danger fw-bold'}">
+          <a href="#" class="btn btn-link p-0 m-0 fw-semibold pan-to-marker" data-marker-idx="${idx}">${hasName ? tags.name : '⚠ Missing'}</a>
+        </td>
+        <td class="${hasAddr ? '' : 'text-danger fw-bold'}">${hasAddr ? `${houseDisplay} ${streetOrPlace}, ${postcode}` : '⚠ Incomplete'}</td>
+        <td class="${hasHours ? '' : 'text-danger fw-bold'}">${hasHours ? hours : '⚠ Missing'}</td>
+        <td>
+          <div class="quality-bar">
+            <div class="quality-fill ${missingCount === 0 ? 'quality-complete' : missingCount === 3 ? 'quality-missing' : 'quality-partial'}" 
+                 style="width: ${100 - (missingCount / 3) * 100}%"></div>
+          </div>
+        </td>
+        <td>
+          <a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank"
+          style="display:inline-block; padding:4px 8px; background-color:#0d6efd; color:#fff; text-decoration:none; border-radius:4px; font-size:0.875rem; font-weight:500;">
+          Update this
+          </a>
+        </td>
+        `;
           document.getElementById("quality-body").appendChild(row);
         });
 
@@ -465,6 +468,19 @@ title: Dundee OSM Health
   document.addEventListener('click', function(e) {
     if (e.target && e.target.id === 'pickPlaceBtn') {
       pickRandomPlace();
+    }
+  });
+
+  // Add event delegation for pan-to-marker links
+  document.getElementById("quality-body").addEventListener("click", function(e) {
+    if (e.target && e.target.classList.contains("pan-to-marker")) {
+      e.preventDefault();
+      const idx = parseInt(e.target.getAttribute("data-marker-idx"), 10);
+      const item = allMarkers[idx];
+      if (item && item.marker) {
+        map.flyTo(item.marker.getLatLng(), 17);
+        item.marker.openPopup();
+      }
     }
   });
 </script>
