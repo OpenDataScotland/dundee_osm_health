@@ -99,7 +99,54 @@ title: Dundee OSM Health
 .quality-complete { background: #28a745; }
 .quality-partial { background: #fd7e14; }
 .quality-missing { background: #dc3545; }
-/* Removed .pan-to-marker custom styles, now using Bootstrap 5 classes */
+
+/* Responsive stacked table for mobile */
+@media (max-width: 600px) {
+  .summary-section table, .summary-section thead, .summary-section tbody, .summary-section th, .summary-section td, .summary-section tr {
+    display: block;
+    width: 100%;
+  }
+  .summary-section thead {
+    display: none;
+  }
+  .summary-section tr {
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.5rem 0.5rem 0.5rem 0;
+  }
+  .summary-section td {
+    position: relative;
+    padding-left: 50%;
+    min-height: 40px;
+    border: none;
+    border-bottom: 1px solid #f1f1f1;
+    text-align: left;
+    background: none;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+  }
+  .summary-section td:last-child {
+    border-bottom: none;
+  }
+  .summary-section td:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 48%;
+    height: 100%;
+    padding-left: 0.75rem;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #495057;
+    content: attr(data-label);
+    display: flex;
+    align-items: center;
+  }
+}
 </style>
 
 <script>
@@ -370,25 +417,25 @@ title: Dundee OSM Health
           // Add to quality table
           const row = document.createElement("tr");
           row.innerHTML = `
-        <td class="${hasName ? '' : 'text-danger fw-bold'}">
-          <a href="#" class="btn btn-link p-0 m-0 fw-semibold pan-to-marker" data-marker-idx="${idx}">${hasName ? tags.name : '⚠ Missing'}</a>
-        </td>
-        <td class="${hasAddr ? '' : 'text-danger fw-bold'}">${hasAddr ? `${houseDisplay} ${streetOrPlace}, ${postcode}` : '⚠ Incomplete'}</td>
-        <td class="${hasHours ? '' : 'text-danger fw-bold'}">${hasHours ? hours : '⚠ Missing'}</td>
-        <td>
-          <div class="quality-bar">
-            <div class="quality-fill ${missingCount === 0 ? 'quality-complete' : missingCount === 3 ? 'quality-missing' : 'quality-partial'}" 
-                 style="width: ${100 - (missingCount / 3) * 100}%"></div>
-          </div>
-        </td>
-        <td>
-          <a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank"
-          style="display:inline-block; padding:4px 8px; background-color:#0d6efd; color:#fff; text-decoration:none; border-radius:4px; font-size:0.875rem; font-weight:500;">
-          Update this
-          </a>
-        </td>
-        `;
-          document.getElementById("quality-body").appendChild(row);
+      <td data-label="Name" class="${hasName ? '' : 'text-danger fw-bold'}">
+        <a href="#" class="btn btn-link p-0 m-0 fw-semibold pan-to-marker" data-marker-idx="${idx}">${hasName ? tags.name : '⚠ Missing'}</a>
+      </td>
+      <td data-label="Address" class="${hasAddr ? '' : 'text-danger fw-bold'}">${hasAddr ? `${houseDisplay} ${streetOrPlace}, ${postcode}` : '⚠ Incomplete'}</td>
+      <td data-label="Hours" class="${hasHours ? '' : 'text-danger fw-bold'}">${hasHours ? hours : '⚠ Missing'}</td>
+      <td data-label="Quality">
+        <div class="quality-bar">
+          <div class="quality-fill ${missingCount === 0 ? 'quality-complete' : missingCount === 3 ? 'quality-missing' : 'quality-partial'}" 
+               style="width: ${100 - (missingCount / 3) * 100}%"></div>
+        </div>
+      </td>
+      <td data-label="Edit">
+        <a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank"
+        style="display:inline-block; padding:4px 8px; background-color:#0d6efd; color:#fff; text-decoration:none; border-radius:4px; font-size:0.875rem; font-weight:500;">
+        Update this
+        </a>
+      </td>
+      `;
+        document.getElementById("quality-body").appendChild(row);
         });
 
         // Add all markers to map initially
