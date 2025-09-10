@@ -42,22 +42,24 @@ title: Dundee OSM Health
           <th>
             Name
             <div class="quality-bar">
-              <div id="name-bar" class="quality-fill quality-complete"></div>
+              <div id="name-bar" class="quality-fill quality-complete"><span id="name-quality-count" class="quality-count"></span></div>
             </div>
           </th>
           <th>
             Address
             <div class="quality-bar">
-              <div id="addr-bar" class="quality-fill quality-partial"></div>
+              <div id="addr-bar" class="quality-fill quality-partial"><span id="addr-quality-count" class="quality-count"></span></div>
             </div>
           </th>
           <th>
             Hours
             <div class="quality-bar">
-              <div id="hours-bar" class="quality-fill quality-missing"></div>
+              <div id="hours-bar" class="quality-fill quality-missing"><span id="hours-quality-count" class="quality-count"></span></div>
             </div>
           </th>
-          <th>Quality</th>
+          <th>
+            Quality
+          </th>
           <th>Edit</th>
         </tr>
       </thead>
@@ -65,6 +67,39 @@ title: Dundee OSM Health
     </table>
   </div>
 </div>
+
+<style>
+.quality-bar {
+  position: relative;
+  height: 18px;
+  background: #e9ecef;
+  border-radius: 6px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  overflow: hidden;
+}
+.quality-fill {
+  height: 100%;
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.95em;
+  color: #fff;
+  transition: width 0.5s;
+}
+.quality-count {
+  width: 100%;
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+}
+.quality-complete { background: #28a745; }
+.quality-partial { background: #fd7e14; }
+.quality-missing { background: #dc3545; }
+</style>
 
 <script>
   // Custom Legend Control
@@ -259,7 +294,11 @@ title: Dundee OSM Health
         const features = data.elements.filter((el) => el.type === "node" || (el.type === "way" && el.center));
         let missingName = 0,
           missingAddr = 0,
-          missingHours = 0;
+          missingHours = 0,
+          goodQualityCount = 0,
+          nameQualityCount = 0,
+          addrQualityCount = 0,
+          hoursQualityCount = 0;
 
         features.forEach((el) => {
           const lat = el.lat || el.center?.lat;
@@ -294,11 +333,17 @@ title: Dundee OSM Health
           if (!hasAddr) missingAddr++;
           if (!hasHours) missingHours++;
 
+          if (hasName) nameQualityCount++;
+          if (hasAddr) addrQualityCount++;
+          if (hasHours) hoursQualityCount++;
+
           // Choose icon colour
           let icon = iconGreen;
           const missingCount = [hasName, hasAddr, hasHours].filter((v) => !v).length;
           if (missingCount === 1 || missingCount === 2) icon = iconOrange;
           if (missingCount === 3) icon = iconRed;
+
+          if (missingCount === 0) goodQualityCount++;
 
           const streetOrPlace = tags["addr:street"] || tags["addr:place"] || "";
 
@@ -355,6 +400,11 @@ title: Dundee OSM Health
         document.getElementById("name-bar").style.width = `${100 * (1 - missingName / total)}%`;
         document.getElementById("addr-bar").style.width = `${100 * (1 - missingAddr / total)}%`;
         document.getElementById("hours-bar").style.width = `${100 * (1 - missingHours / total)}%`;
+
+        // Update per-column quality counts (now inside the bars)
+        document.getElementById("name-quality-count").textContent = `${nameQualityCount}/${total}`;
+        document.getElementById("addr-quality-count").textContent = `${addrQualityCount}/${total}`;
+        document.getElementById("hours-quality-count").textContent = `${hoursQualityCount}/${total}`;
 
         // Reset filter checkbox
         document.getElementById("hideIncomplete").checked = false;
