@@ -286,7 +286,8 @@ title: Dundee OSM Health
           }
 
           const hasName = !!tags.name;
-          const hasAddr = !!(tags["addr:street"] && (tags["addr:housenumber"] || tags["addr:unit"] || tags["addr:housename"]) && tags["addr:postcode"]);
+          // Only require addr:street or addr:place, and addr:postcode for address quality
+          const hasAddr = !!((tags["addr:street"] || tags["addr:place"]) && tags["addr:postcode"]);
           const hasHours = !!tags.opening_hours;
 
           if (!hasName) missingName++;
@@ -299,9 +300,11 @@ title: Dundee OSM Health
           if (missingCount === 1 || missingCount === 2) icon = iconOrange;
           if (missingCount === 3) icon = iconRed;
 
+          const streetOrPlace = tags["addr:street"] || tags["addr:place"] || "";
+
           const popupContent = `
 			<strong>${name}</strong><br/>
-			${houseDisplay} ${street}<br/>
+			${houseDisplay} ${streetOrPlace}<br/>
 			${postcode}<br/>
 			${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
 			${hours ? `Opening hours: ${hours}<br/>` : ""}
@@ -321,7 +324,7 @@ title: Dundee OSM Health
           const row = document.createElement("tr");
           row.innerHTML = `
 		<td class="${hasName ? "" : "text-danger fw-bold"}">${hasName ? tags.name : "⚠ Missing"}</td>
-		<td class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${houseDisplay} ${street}, ${postcode}` : "⚠ Incomplete"}</td>
+		<td class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${houseDisplay} ${streetOrPlace}, ${postcode}` : "⚠ Incomplete"}</td>
 		<td class="${hasHours ? "" : "text-danger fw-bold"}">${hasHours ? hours : "⚠ Missing"}</td>
 		<td>
 			<div class="quality-bar">
