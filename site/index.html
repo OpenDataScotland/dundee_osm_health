@@ -5,9 +5,7 @@ title: Dundee OSM Health
 <!-- Category Navigation -->
 <div class="category-tabs">
   {% for report in site.reports %}
-    <a href="#" class="category-tab{% if forloop.first %} active{% endif %}" data-report-id="{{ report.name | split: '.' | first }}">
-      {{ report.title }}
-    </a>
+  <a href="#" class="category-tab{% if forloop.first %} active{% endif %}" data-report-id="{{ report.name | split: '.' | first }}"> {{ report.title }} </a>
   {% endfor %}
 </div>
 
@@ -17,14 +15,14 @@ title: Dundee OSM Health
   <div class="map-container">
     <div id="map" style="height: 100%; min-height: 500px"></div>
   </div>
-  
+
   <!-- Pick a Place Section -->
   <div class="pick-place-section">
     <button class="pick-place-btn" type="button" id="pickPlaceBtn">
       <span class="pick-place-icon">🎯</span>
       Pick a place to visit and update
     </button>
-    <div class="pick-place-info" id="pickPlaceInfo" style="display: none;">
+    <div class="pick-place-info" id="pickPlaceInfo" style="display: none">
       <div class="picked-place-name" id="pickedPlaceName"></div>
       <div class="picked-place-address" id="pickedPlaceAddress"></div>
       <div class="picked-place-issues" id="pickedPlaceIssues"></div>
@@ -42,24 +40,22 @@ title: Dundee OSM Health
           <th>
             Name
             <div class="quality-bar">
-              <div id="name-bar" class="quality-fill quality-complete"><span id="name-quality-count" class="quality-count"></span></div>
+              <div id="name-bar" class="quality-fill"><span id="name-quality-count" class="quality-count"></span></div>
             </div>
           </th>
           <th>
             Address
             <div class="quality-bar">
-              <div id="addr-bar" class="quality-fill quality-partial"><span id="addr-quality-count" class="quality-count"></span></div>
+              <div id="addr-bar" class="quality-fill"><span id="addr-quality-count" class="quality-count"></span></div>
             </div>
           </th>
           <th>
             Hours
             <div class="quality-bar">
-              <div id="hours-bar" class="quality-fill quality-missing"><span id="hours-quality-count" class="quality-count"></span></div>
+              <div id="hours-bar" class="quality-fill"><span id="hours-quality-count" class="quality-count"></span></div>
             </div>
           </th>
-          <th>
-            Quality
-          </th>
+          <th>Quality</th>
           <th>Edit</th>
         </tr>
       </thead>
@@ -69,92 +65,103 @@ title: Dundee OSM Health
 </div>
 
 <style>
-.quality-bar {
-  position: relative;
-  height: 18px;
-  background: #e9ecef;
-  border-radius: 6px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  overflow: hidden;
-}
-.quality-fill {
-  height: 100%;
-  border-radius: 6px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.95em;
-  color: #fff;
-  transition: width 0.5s;
-}
-.quality-count {
-  width: 100%;
-  text-align: center;
-  z-index: 2;
-  pointer-events: none;
-}
-.quality-complete { background: #28a745; }
-.quality-partial { background: #fd7e14; }
-.quality-missing { background: #dc3545; }
-
-/* Responsive stacked table for mobile */
-@media (max-width: 600px) {
-  .summary-section table, .summary-section thead, .summary-section tbody, .summary-section th, .summary-section td, .summary-section tr {
-    display: block;
-    width: 100%;
-  }
-  .summary-section thead {
-    display: none;
-  }
-  .summary-section tr {
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #e9ecef;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-    background: #fff;
-    border-radius: 8px;
-    padding: 0.5rem 0.5rem 0.5rem 0;
-  }
-  .summary-section td {
+  .quality-bar {
     position: relative;
-    padding-left: 50%;
-    min-height: 40px;
-    border: none;
-    border-bottom: 1px solid #f1f1f1;
-    text-align: left;
-    background: none;
-    box-shadow: none;
-    display: flex;
-    align-items: center;
+    height: 18px;
+    background: #e9ecef;
+    border-radius: 6px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    overflow: hidden;
   }
-  .summary-section td:last-child {
-    border-bottom: none;
-  }
-  .summary-section td:before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 48%;
+  .quality-fill {
     height: 100%;
-    padding-left: 0.75rem;
-    white-space: nowrap;
-    font-weight: 600;
-    color: #495057;
-    content: attr(data-label);
+    border-radius: 6px;
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.95em;
+    color: #fff;
+    transition: width 0.5s;
   }
-}
+  .quality-count {
+    width: 100%;
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .quality-complete {
+    background: #28a745;
+  }
+  .quality-partial {
+    background: #fd7e14;
+  }
+  .quality-missing {
+    background: #dc3545;
+  }
+
+  /* Responsive stacked table for mobile */
+  @media (max-width: 600px) {
+    .summary-section table,
+    .summary-section thead,
+    .summary-section tbody,
+    .summary-section th,
+    .summary-section td,
+    .summary-section tr {
+      display: block;
+      width: 100%;
+    }
+    .summary-section thead {
+      display: none;
+    }
+    .summary-section tr {
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e9ecef;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.5rem 0.5rem 0.5rem 0;
+    }
+    .summary-section td {
+      position: relative;
+      padding-left: 50%;
+      min-height: 40px;
+      border: none;
+      border-bottom: 1px solid #f1f1f1;
+      text-align: left;
+      background: none;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+    }
+    .summary-section td:last-child {
+      border-bottom: none;
+    }
+    .summary-section td:before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 48%;
+      height: 100%;
+      padding-left: 0.75rem;
+      white-space: nowrap;
+      font-weight: 600;
+      color: #495057;
+      content: attr(data-label);
+      display: flex;
+      align-items: center;
+    }
+  }
 </style>
 
 <script>
   // Custom Legend Control
   L.Control.Legend = L.Control.extend({
-    onAdd: function(map) {
-      const container = L.DomUtil.create('div', 'leaflet-control-legend');
-      
+    onAdd: function (map) {
+      const container = L.DomUtil.create("div", "leaflet-control-legend");
+
       container.innerHTML = `
         <div class="legend-header">
           <div class="legend-title">Legend</div>
@@ -183,32 +190,32 @@ title: Dundee OSM Health
           </div>
         </div>
       `;
-      
+
       // Add toggle functionality
-      const toggleBtn = container.querySelector('.legend-toggle');
-      const content = container.querySelector('.legend-content');
-      const toggleIcon = container.querySelector('.toggle-icon');
-      
+      const toggleBtn = container.querySelector(".legend-toggle");
+      const content = container.querySelector(".legend-content");
+      const toggleIcon = container.querySelector(".toggle-icon");
+
       // Auto-collapse on mobile devices
       const isMobile = window.innerWidth <= 480;
       if (isMobile) {
-        content.style.display = 'none';
-        toggleIcon.textContent = '+';
-        container.classList.add('legend-collapsed');
+        content.style.display = "none";
+        toggleIcon.textContent = "+";
+        container.classList.add("legend-collapsed");
       }
-      
-      toggleBtn.addEventListener('click', function() {
-        const isVisible = content.style.display !== 'none';
-        content.style.display = isVisible ? 'none' : 'block';
-        toggleIcon.textContent = isVisible ? '+' : '−';
-        container.classList.toggle('legend-collapsed', isVisible);
+
+      toggleBtn.addEventListener("click", function () {
+        const isVisible = content.style.display !== "none";
+        content.style.display = isVisible ? "none" : "block";
+        toggleIcon.textContent = isVisible ? "+" : "−";
+        container.classList.toggle("legend-collapsed", isVisible);
       });
-      
+
       return container;
-    }
+    },
   });
 
-  L.control.legend = function(opts) {
+  L.control.legend = function (opts) {
     return new L.Control.Legend(opts);
   };
 
@@ -219,7 +226,7 @@ title: Dundee OSM Health
   }).addTo(map);
 
   // Add the custom legend control to the map
-  L.control.legend({ position: 'topright' }).addTo(map);
+  L.control.legend({ position: "topright" }).addTo(map);
 
   // Define colour-coded icons
   const iconRed = L.icon({
@@ -252,68 +259,81 @@ title: Dundee OSM Health
   // Store markers for filtering
   let allMarkers = [];
   let filteredMarkers = [];
-  let currentCategory = 'cafes'; // Default to first category
+  let currentCategory = "cafes"; // Default to first category
   let currentPickedMarker = null; // Track the currently picked marker
 
   // Function to pick a random place with low quality data
   function pickRandomPlace() {
     // Get markers with missing data (red or orange)
-    const lowQualityMarkers = allMarkers.filter(item => item.missingCount > 0);
-    
+    const lowQualityMarkers = allMarkers.filter((item) => item.missingCount > 0);
+
     if (lowQualityMarkers.length === 0) {
-      alert('No places with missing data found in this category!');
+      alert("No places with missing data found in this category!");
       return;
     }
-    
+
     // Pick a random marker
     const randomIndex = Math.floor(Math.random() * lowQualityMarkers.length);
     const pickedItem = lowQualityMarkers[randomIndex];
-    
+
     // Remove previous picked marker highlight
     if (currentPickedMarker) {
       currentPickedMarker.setIcon(pickedItem.missingCount === 3 ? iconRed : iconOrange);
     }
-    
+
     // Highlight the picked marker with a pulsing effect
     const pickedMarker = pickedItem.marker;
-    pickedMarker.setIcon(L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41],
-    }));
-    
+    pickedMarker.setIcon(
+      L.icon({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41],
+      })
+    );
+
     currentPickedMarker = pickedMarker;
-    
+
     // Center map on the picked marker
     map.setView(pickedMarker.getLatLng(), 16);
-    
+
     // Open the popup
     pickedMarker.openPopup();
-    
+
     // Update the pick place info
     const popupContent = pickedMarker.getPopup().getContent();
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = popupContent;
-    
-    const name = tempDiv.querySelector('strong')?.textContent || 'Unknown place';
-    const address = tempDiv.querySelector('br')?.nextSibling?.textContent?.trim() || 'Address not available';
-    
+
+    const name = tempDiv.querySelector("strong")?.textContent || "Unknown place";
+    const address = tempDiv.querySelector("br")?.nextSibling?.textContent?.trim() || "Address not available";
+
     // Determine missing issues
     const issues = [];
-    if (!pickedItem.hasName) issues.push('Name');
-    if (!pickedItem.hasAddr) issues.push('Address');
-    if (!pickedItem.hasHours) issues.push('Opening hours');
-    
-    document.getElementById('pickedPlaceName').textContent = name;
-    document.getElementById('pickedPlaceAddress').textContent = address;
-    document.getElementById('pickedPlaceIssues').textContent = `Missing: ${issues.join(', ')}`;
-    document.getElementById('pickPlaceInfo').style.display = 'block';
-    
+    if (!pickedItem.hasName) issues.push("Name");
+    if (!pickedItem.hasAddr) issues.push("Address");
+    if (!pickedItem.hasHours) issues.push("Opening hours");
+
+    document.getElementById("pickedPlaceName").textContent = name;
+    document.getElementById("pickedPlaceAddress").textContent = address;
+    document.getElementById("pickedPlaceIssues").textContent = `Missing: ${issues.join(", ")}`;
+    document.getElementById("pickPlaceInfo").style.display = "block";
+
     // Add pulsing animation class
-    pickedMarker.getElement()?.classList.add('pulse-marker');
+    pickedMarker.getElement()?.classList.add("pulse-marker");
+  }
+
+  function setQualityClass(el, percent) {
+    el.classList.remove("quality-complete", "quality-partial", "quality-missing");
+    if (percent === 100) {
+      el.classList.add("quality-complete");
+    } else if (percent >= 50) {
+      el.classList.add("quality-partial");
+    } else {
+      el.classList.add("quality-missing");
+    }
   }
 
   // Function to load data for a specific category
@@ -338,7 +358,7 @@ title: Dundee OSM Health
       .then((data) => {
         // Clear loading state
         document.getElementById("quality-body").innerHTML = "";
-        
+
         const features = data.elements.filter((el) => el.type === "node" || (el.type === "way" && el.center));
         let missingName = 0,
           missingAddr = 0,
@@ -411,20 +431,20 @@ title: Dundee OSM Health
             hasAddr: hasAddr,
             hasHours: hasHours,
             missingCount: missingCount,
-            tableRowIndex: idx // Track index for table row
+            tableRowIndex: idx, // Track index for table row
           });
 
           // Add to quality table
           const row = document.createElement("tr");
           row.innerHTML = `
-      <td data-label="Name" class="${hasName ? '' : 'text-danger fw-bold'}">
-        <a href="#" class="btn btn-link p-0 m-0 fw-semibold pan-to-marker" data-marker-idx="${idx}">${hasName ? tags.name : '⚠ Missing'}</a>
+      <td data-label="Name" class="${hasName ? "" : "text-danger fw-bold"}">
+        <a href="#" class="btn btn-link p-0 m-0 fw-semibold pan-to-marker" data-marker-idx="${idx}">${hasName ? tags.name : "⚠ Missing"}</a>
       </td>
-      <td data-label="Address" class="${hasAddr ? '' : 'text-danger fw-bold'}">${hasAddr ? `${houseDisplay} ${streetOrPlace}, ${postcode}` : '⚠ Incomplete'}</td>
-      <td data-label="Hours" class="${hasHours ? '' : 'text-danger fw-bold'}">${hasHours ? hours : '⚠ Missing'}</td>
+      <td data-label="Address" class="${hasAddr ? "" : "text-danger fw-bold"}">${hasAddr ? `${houseDisplay} ${streetOrPlace}, ${postcode}` : "⚠ Incomplete"}</td>
+      <td data-label="Hours" class="${hasHours ? "" : "text-danger fw-bold"}">${hasHours ? hours : "⚠ Missing"}</td>
       <td data-label="Quality">
         <div class="quality-bar">
-          <div class="quality-fill ${missingCount === 0 ? 'quality-complete' : missingCount === 3 ? 'quality-missing' : 'quality-partial'}" 
+          <div class="quality-fill ${missingCount === 0 ? "quality-complete" : missingCount === 3 ? "quality-missing" : "quality-partial"}" 
                style="width: ${100 - (missingCount / 3) * 100}%"></div>
         </div>
       </td>
@@ -435,7 +455,7 @@ title: Dundee OSM Health
         </a>
       </td>
       `;
-        document.getElementById("quality-body").appendChild(row);
+          document.getElementById("quality-body").appendChild(row);
         });
 
         // Add all markers to map initially
@@ -447,9 +467,22 @@ title: Dundee OSM Health
         const total = features.length;
 
         // Update quality bars
-        document.getElementById("name-bar").style.width = `${100 * (1 - missingName / total)}%`;
-        document.getElementById("addr-bar").style.width = `${100 * (1 - missingAddr / total)}%`;
-        document.getElementById("hours-bar").style.width = `${100 * (1 - missingHours / total)}%`;
+        const safeTotal = total || 0;
+        const namePercent = safeTotal ? Math.round(100 * (1 - missingName / safeTotal)) : 0;
+        const addrPercent = safeTotal ? Math.round(100 * (1 - missingAddr / safeTotal)) : 0;
+        const hoursPercent = safeTotal ? Math.round(100 * (1 - missingHours / safeTotal)) : 0;
+
+        const nameBar = document.getElementById("name-bar");
+        const addrBar = document.getElementById("addr-bar");
+        const hoursBar = document.getElementById("hours-bar");
+
+        nameBar.style.width = `${namePercent}%`;
+        addrBar.style.width = `${addrPercent}%`;
+        hoursBar.style.width = `${hoursPercent}%`;
+
+        setQualityClass(nameBar, namePercent);
+        setQualityClass(addrBar, addrPercent);
+        setQualityClass(hoursBar, hoursPercent);
 
         // Update per-column quality counts (now inside the bars)
         document.getElementById("name-quality-count").textContent = `${nameQualityCount}/${total}`;
@@ -469,8 +502,8 @@ title: Dundee OSM Health
   loadCategoryData(currentCategory);
 
   // Handle filter checkbox - use event delegation since the checkbox is created dynamically
-  document.addEventListener('change', function(e) {
-    if (e.target && e.target.id === 'hideIncomplete') {
+  document.addEventListener("change", function (e) {
+    if (e.target && e.target.id === "hideIncomplete") {
       const hideIncomplete = e.target.checked;
 
       // Remove all markers from map
@@ -501,25 +534,25 @@ title: Dundee OSM Health
       // Get the category ID and load data
       const categoryId = this.getAttribute("data-report-id");
       currentCategory = categoryId;
-      
+
       // Update the title
       const categoryTitle = this.textContent;
       document.querySelector(".app-title").textContent = `${categoryTitle} in Dundee`;
-      
+
       // Load data for the selected category
       loadCategoryData(categoryId);
     });
   });
 
   // Handle "Pick a place" button click - use event delegation
-  document.addEventListener('click', function(e) {
-    if (e.target && e.target.id === 'pickPlaceBtn') {
+  document.addEventListener("click", function (e) {
+    if (e.target && e.target.id === "pickPlaceBtn") {
       pickRandomPlace();
     }
   });
 
   // Add event delegation for pan-to-marker links
-  document.getElementById("quality-body").addEventListener("click", function(e) {
+  document.getElementById("quality-body").addEventListener("click", function (e) {
     if (e.target && e.target.classList.contains("pan-to-marker")) {
       e.preventDefault();
       const idx = parseInt(e.target.getAttribute("data-marker-idx"), 10);
