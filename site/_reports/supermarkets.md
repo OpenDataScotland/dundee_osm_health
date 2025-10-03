@@ -9,7 +9,7 @@ query: |
 
   (
     nwr["shop"="supermarket"](area.searchArea);
-    way["shop"="convenience"](area.searchArea);
+    nwr["shop"="convenience"](area.searchArea);
   );
 
   out center;
