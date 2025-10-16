@@ -8,9 +8,8 @@ query: |
   area["name"="Dundee City"]["admin_level"="6"]->.searchArea;
 
   (
-    node["shop"="supermarket"](area.searchArea);
-    way["shop"="supermarket"](area.searchArea);
-    relation["shop"="supermarket"](area.searchArea);
+    nwr["shop"="supermarket"](area.searchArea);
+    nwr["shop"="convenience"](area.searchArea);
   );
 
   out center;
