@@ -22,6 +22,9 @@ title: Dundee OSM Health
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
+# Worker API URL - defaults to production, override with JEKYLL_ENV=development
+worker_url: "https://osm-dundee-worker.jackgilmore.workers.dev"
+
 # Build settings
 theme: null
 

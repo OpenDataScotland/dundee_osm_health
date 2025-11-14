@@ -1,0 +1,4 @@
+# Development configuration overrides
+# Use this with: bundle exec jekyll serve --config _config.yml,_config_dev.yml
+
+worker_url: "http://localhost:8787"

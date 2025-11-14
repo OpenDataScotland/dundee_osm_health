@@ -31,6 +31,20 @@ export default {
 		const reportName = pathParts[0];
 		const reportUrl = `https://osm.dundee.opendata.scot/reports/${reportName}/`;
 
+		// Create cache key from the request URL
+		const cacheKey = new Request(url.toString(), request);
+		const cache = caches.default;
+
+		// Check if we have a cached response
+		let response = await cache.match(cacheKey);
+
+		if (response) {
+			// Return cached response with X-Cache-Status header
+			const cachedResponse = new Response(response.body, response);
+			cachedResponse.headers.set('X-Cache-Status', 'HIT');
+			return cachedResponse;
+		}
+
 		try {
 			// Fetch report configuration from API
 			const reportRes = await fetch(reportUrl);
@@ -70,9 +84,20 @@ export default {
 
 			const json = await overpassRes.json();
 
-			return new Response(JSON.stringify(json, null, 2), {
-				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			// Create response with cache headers
+			response = new Response(JSON.stringify(json, null, 2), {
+				headers: {
+					'Content-Type': 'application/json',
+					'Cache-Control': 'public, max-age=900', // 15 minutes = 900 seconds
+					'X-Cache-Status': 'MISS',
+					...corsHeaders
+				},
 			});
+
+			// Store in cache
+			ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+			return response;
 		} catch (err) {
 			return new Response(`Error: ${err.message}`, {
 				status: 500,

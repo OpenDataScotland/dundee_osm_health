@@ -31,8 +31,6 @@ These are currently fixed but will be dynamic per report type
 
 ### Installation
 
-<!-- TODO: Need to add dev vs. prod config for site and API url endpoints -->
-
 1. **Clone the repository**
 
    ```bash
@@ -47,11 +45,13 @@ These are currently fixed but will be dynamic per report type
    npm install
    ```
 
-3. **Run the worker**
+3. **Run the worker locally**
 
    ```bash
    npx wrangler dev
    ```
+
+   The worker will start on `http://localhost:8787`
 
 4. **Set up the static site**
 
@@ -62,11 +62,19 @@ These are currently fixed but will be dynamic per report type
 
 5. **Run the development server**
 
+   For local development (connects to worker at localhost:8787):
+   ```bash
+   bundle exec jekyll serve --config _config.yml,_config_dev.yml
+   ```
+
+   For production testing:
    ```bash
    bundle exec jekyll serve
    ```
 
 The application will be available at `http://localhost:4000`
+
+> **Note**: When running locally, make sure both the Cloudflare Worker (step 3) and Jekyll site (step 5) are running simultaneously. The site uses `_config_dev.yml` to point to the local worker at `http://localhost:8787` instead of the production worker URL.
 
 ## How It Works
 
@@ -83,7 +91,7 @@ The application will be available at `http://localhost:4000`
 - Processes and filters place data for Dundee
 - Returns JSON data for frontend consumption
 - Handles different place categories (cafes, supermarkets, etc.)
-- TODO: Caches data from OpenStreetMap Overpass API
+- Caches responses for 15 minutes using Cloudflare's edge cache
 
 ### Data Quality Assessment
 

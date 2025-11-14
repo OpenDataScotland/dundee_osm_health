@@ -353,7 +353,7 @@ title: Dundee OSM Health
     loadingDiv.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
     document.getElementById("quality-body").appendChild(loadingDiv);
 
-    fetch(`https://osm-dundee-worker.jackgilmore.workers.dev/${category}`)
+    fetch(`{{ site.worker_url }}/${category}`)
       .then((res) => res.json())
       .then((data) => {
         // Clear loading state
