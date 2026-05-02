@@ -70,7 +70,8 @@ export default {
 			const overpassRes = await fetch('https://overpass-api.de/api/interpreter', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'User-Agent': 'OSM Dundee Worker (https://osm.dundee.opendata.scot)'
 				},
 				body: new URLSearchParams({ data: query }).toString()
 			});
