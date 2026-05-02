@@ -89,7 +89,7 @@ export default {
 			response = new Response(JSON.stringify(json, null, 2), {
 				headers: {
 					'Content-Type': 'application/json',
-					'Cache-Control': 'public, max-age=900', // 15 minutes = 900 seconds
+					'Cache-Control': 'public, max-age=86400', // 24 hours = 86400 seconds
 					'X-Cache-Status': 'MISS',
 					...corsHeaders
 				},
