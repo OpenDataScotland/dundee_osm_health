@@ -175,11 +175,25 @@ title: Dundee OSM Health
             <span>Complete</span>
           </div>
           <div class="legend-item">
-            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png" class="legend-marker" alt="Partial" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+               viewBox="1032 5 32 28">
+              <path class="leaflet-interactive"
+                    stroke="#DE911D" stroke-opacity="1" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    fill="#F0B429" fill-opacity="1" fill-rule="evenodd"
+                    d="M1034.6862915010151 19 L1046 7.686291501015239 L1057.3137084989849 19 L1046 30.31370849898476 L1034.6862915010151 19"/>
+            </svg>
             <span>Partial</span>
           </div>
           <div class="legend-item">
-            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png" class="legend-marker" alt="Missing" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+               viewBox="754 122 34 34">
+              <path class="leaflet-interactive"
+                    stroke="#ff0000" stroke-opacity="1" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    fill="#ff0000" fill-opacity="1" fill-rule="evenodd"
+                    d="M780,148L760,128M760,148L780,128"/>
+            </svg>
             <span>Missing</span>
           </div>
           <div class="filter-checkbox">
@@ -228,16 +242,6 @@ title: Dundee OSM Health
   // Add the custom legend control to the map
   L.control.legend({ position: "topright" }).addTo(map);
 
-  // Define colour-coded icons
-  const iconRed = L.icon({
-    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
-
   const iconOrange = L.icon({
     iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -276,23 +280,7 @@ title: Dundee OSM Health
     const randomIndex = Math.floor(Math.random() * lowQualityMarkers.length);
     const pickedItem = lowQualityMarkers[randomIndex];
 
-    // Remove previous picked marker highlight
-    if (currentPickedMarker) {
-      currentPickedMarker.setIcon(pickedItem.missingCount === 3 ? iconRed : iconOrange);
-    }
-
-    // Highlight the picked marker with a pulsing effect
     const pickedMarker = pickedItem.marker;
-    pickedMarker.setIcon(
-      L.icon({
-        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
-      })
-    );
 
     currentPickedMarker = pickedMarker;
 
@@ -320,9 +308,6 @@ title: Dundee OSM Health
     document.getElementById("pickedPlaceAddress").textContent = address;
     document.getElementById("pickedPlaceIssues").textContent = `Missing: ${issues.join(", ")}`;
     document.getElementById("pickPlaceInfo").style.display = "block";
-
-    // Add pulsing animation class
-    pickedMarker.getElement()?.classList.add("pulse-marker");
   }
 
   function setQualityClass(el, percent) {
@@ -405,26 +390,43 @@ title: Dundee OSM Health
           if (hasAddr) addrQualityCount++;
           if (hasHours) hoursQualityCount++;
 
-          // Choose icon colour
-          let icon = iconGreen;
-          const missingCount = [hasName, hasAddr, hasHours].filter((v) => !v).length;
-          if (missingCount === 1 || missingCount === 2) icon = iconOrange;
-          if (missingCount === 3) icon = iconRed;
-
-          if (missingCount === 0) goodQualityCount++;
 
           const streetOrPlace = tags["addr:street"] || tags["addr:place"] || "";
 
           const popupContent = `
-			<strong>${name}</strong><br/>
-			${houseDisplay} ${streetOrPlace}<br/>
-			${postcode}<br/>
-			${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
-			${hours ? `Opening hours: ${hours}<br/>` : ""}
-			<a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank" class="btn btn-sm btn-primary mt-2">Update this</a>
-			`;
+          <strong>${name}</strong><br/>
+          ${houseDisplay} ${streetOrPlace}<br/>
+          ${postcode}<br/>
+          ${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
+          ${hours ? `Opening hours: ${hours}<br/>` : ""}
+          <a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank" class="btn btn-sm btn-primary mt-2">Update this</a>
+          `;
 
-          const marker = L.marker([lat, lon], { icon }).bindPopup(popupContent);
+          // Choose marker
+          let marker = L.marker([lat, lon], { icon: iconGreen }).bindPopup(popupContent);
+          const missingCount = [hasName, hasAddr, hasHours].filter((v) => !v).length;
+          if (missingCount === 1 || missingCount === 2) marker = L.shapeMarker([lat, lon], {
+              fillColor: "#F0B429",
+              color: '#DE911D',
+              fillOpacity: 1,
+              stroke: true,
+              shape: "diamond",
+              radius: 8,
+          }).bindPopup(popupContent);
+          if (missingCount === 3) {
+              marker = L.shapeMarker([lat, lon], {
+                  fillColor: "#ff0000",
+                  color: '#ff0000',
+                  fillOpacity: 1,
+                  stroke: true,
+                  shape: "x",
+                  radius: 20,
+              }).bindPopup(popupContent);
+          }
+
+          if (missingCount === 0) goodQualityCount++;
+
+
           allMarkers.push({
             marker: marker,
             hasName: hasName,
