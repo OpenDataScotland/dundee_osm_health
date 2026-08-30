@@ -66,8 +66,8 @@ export default {
 				});
 			}
 
-			// Send query to Overpass API
-			const overpassRes = await fetch('https://overpass-api.de/api/interpreter', {
+			// Send query to Postpass API
+			const overpassRes = await fetch('https://postpass.geofabrik.de/api/interpreter', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
@@ -77,7 +77,10 @@ export default {
 			});
 
 			if (!overpassRes.ok) {
-				return new Response(`Overpass API Error: ${overpassRes.status}`, {
+
+				console.log(`Postpass API Error: ${overpassRes.status} ${overpassRes.statusText}`);
+
+				return new Response(`Postpass API Error: ${overpassRes.status}`, {
 					status: 502,
 					headers: corsHeaders
 				});

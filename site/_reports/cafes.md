@@ -2,17 +2,26 @@
 title: "Cafes"
 description: "A list of cafes in Dundee"
 query: |
-  [out:json][timeout:25];
-
-  // Fetch the Dundee area
-  area["name"="Dundee City"]["admin_level"="6"]->.searchArea;
-
-  // Find all cafes within the Dundee area
-  (
-    node["amenity"="cafe"](area.searchArea);
-    way["amenity"="cafe"](area.searchArea);
-    relation["amenity"="cafe"](area.searchArea);
-  );
-
-  out center;
+  WITH dundee AS (
+      SELECT geom
+      FROM postpass_polygon
+      WHERE
+          osm_type = 'R'
+          AND tags @> '{
+              "boundary": "administrative",
+              "admin_level": "6",
+              "name": "Dundee City"
+          }'::jsonb
+  )
+  SELECT
+      cafes.osm_id,
+      cafes.osm_type,
+      cafes.tags,
+      cafes.geom
+  FROM postpass_pointpolygon AS cafes
+  CROSS JOIN dundee
+  WHERE
+      cafes.tags @> '{"amenity": "cafe"}'::jsonb
+      AND cafes.geom && dundee.geom
+      AND ST_Intersects(cafes.geom, dundee.geom)
 ---
