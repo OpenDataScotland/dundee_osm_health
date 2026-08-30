@@ -256,6 +256,37 @@ title: Dundee OSM Health
     shadowSize: [41, 41],
   });
 
+  const OSM_TYPE_MAP = { N: "node", W: "way", R: "relation" };
+
+  function getFeatureLatLng(feature) {
+    if (!feature || !feature.geometry) return null;
+    const geometry = feature.geometry;
+    if (geometry.type === "Point" && Array.isArray(geometry.coordinates) && geometry.coordinates.length >= 2) {
+      return {
+        lat: geometry.coordinates[1],
+        lon: geometry.coordinates[0],
+      };
+    }
+
+    const layer = L.geoJSON(feature);
+    const bounds = layer.getBounds();
+    if (bounds.isValid()) {
+      const center = bounds.getCenter();
+      return {
+        lat: center.lat,
+        lon: center.lng,
+      };
+    }
+
+    return null;
+  }
+
+  function getOsmEditType(osmType) {
+    if (!osmType) return "node";
+    const upperType = osmType.toUpperCase();
+    return OSM_TYPE_MAP[upperType] || osmType.toLowerCase();
+  }
+
   // Store markers for filtering
   let allMarkers = [];
   let filteredMarkers = [];
@@ -359,7 +390,10 @@ title: Dundee OSM Health
         // Clear loading state
         document.getElementById("quality-body").innerHTML = "";
 
-        const features = data.elements.filter((el) => el.type === "node" || (el.type === "way" && el.center));
+        const features = (data.features || []).filter((feature) => {
+          const osmType = feature?.properties?.osm_type?.toUpperCase?.();
+          return feature?.geometry && ["N", "W", "R"].includes(osmType);
+        });
         let missingName = 0,
           missingAddr = 0,
           missingHours = 0,
@@ -369,9 +403,11 @@ title: Dundee OSM Health
           hoursQualityCount = 0;
 
         features.forEach((el, idx) => {
-          const lat = el.lat || el.center?.lat;
-          const lon = el.lon || el.center?.lon;
-          const tags = el.tags || {};
+          const latLng = getFeatureLatLng(el);
+          if (!latLng) return;
+          const { lat, lon } = latLng;
+          const properties = el.properties || {};
+          const tags = properties.tags || {};
 
           const name = tags.name || `Unnamed ${category.slice(0, -1)}`; // Remove 's' for singular
           const street = tags["addr:street"] || "";
@@ -415,14 +451,16 @@ title: Dundee OSM Health
 
           const streetOrPlace = tags["addr:street"] || tags["addr:place"] || "";
 
+          const osmEditType = getOsmEditType(properties.osm_type);
+          const osmId = properties.osm_id || el.id;
           const popupContent = `
-			<strong>${name}</strong><br/>
-			${houseDisplay} ${streetOrPlace}<br/>
-			${postcode}<br/>
-			${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
-			${hours ? `Opening hours: ${hours}<br/>` : ""}
-			<a href="https://www.openstreetmap.org/edit?editor=id&${el.type}=${el.id}" target="_blank" class="btn btn-sm btn-primary mt-2">Update this</a>
-			`;
+    <strong>${name}</strong><br/>
+    ${houseDisplay} ${streetOrPlace}<br/>
+    ${postcode}<br/>
+    ${website ? `<a href="${website}" target="_blank">Website</a><br/>` : ""}
+    ${hours ? `Opening hours: ${hours}<br/>` : ""}
+    ${osmId ? `<a href="https://www.openstreetmap.org/edit?editor=id&${osmEditType}=${osmId}" target="_blank" class="btn btn-sm btn-primary mt-2">Update this</a>` : ""}
+    `;
 
           const marker = L.marker([lat, lon], { icon }).bindPopup(popupContent);
           allMarkers.push({
